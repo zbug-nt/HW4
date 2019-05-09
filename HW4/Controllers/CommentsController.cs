@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HW4.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -7,18 +8,18 @@ using System.Web.Http;
 
 namespace HW4.Controllers
 {
-    public class ValuesController : ApiController
+    public class CommentsController : ApiController
     {
         // GET api/values
-        public IEnumerable<string> Get()
+        public IEnumerable<Comment> Get()
         {
-            return new string[] { "value1", "value2" };
+            return new Comment[1];
         }
 
         // GET api/values/5
-        public string Get(int id)
+        public Comment Get(int id)
         {
-            return "value";
+            return new Comment();
         }
 
         // POST api/values
