@@ -1,24 +1,51 @@
-﻿<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS, and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>ASP.NET Web API is a framework that makes it easy to build HTTP services that reach
-        a broad range of clients, including browsers and mobile devices. ASP.NET Web API
-        is an ideal platform for building RESTful applications on the .NET Framework.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301870">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301871">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301872">Learn more &raquo;</a></p>
-    </div>
-</div>
+﻿<html>
+<body>
+    <h1>Comments</h1>
+    <input id="getComments" type="button" value="Show" onclick="getComments()" />
+    <div id="commentList"></div>
+    <br>Author:<br><input id="textAuthor" type="text" />
+    <br>Comment:<br><textarea id="textText" rows="4" cols="37"></textarea>
+    <br><input id="btnSubmit" type="button" value="Submit" onclick="submitComment()"/>
+    <script>
+        var commentList = document.getElementById("commentList");
+        var textAuthor = document.getElementById("textAuthor");
+        var textText = document.getElementById("textText");
+
+        function getComments() {
+            console.log("getComments()");
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "../api/comment");
+            xhr.onload = () => showComments(xhr.responseText);
+            xhr.send();
+        }
+
+        function showComments(commentsText) {
+            console.log("showComments()");
+            var comments = JSON.parse(commentsText);
+            var htmlCode = "";
+            for (i in comments) {
+                htmlCode += "<hr><h3>" + comments[i].Author + "[#" + comments[i].ID + "]:</h3><p><big>" + comments[i].Text + '</big></p><input id="delete' + comments[i].ID + '" type="button" value="Delete" onclick="deleteComment(' + comments[i].ID + ')"/>';
+            }
+            commentList.innerHTML = htmlCode;
+        }
+
+        function submitComment() {
+            console.log("submitComments()");
+            var data = '{ "Author": ' + '"' + textAuthor.value + '", "Text": "' + textText.value + '" }';
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "../api/comment");
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onload = () => getComments();
+            xhr.send(data);
+        }
+
+        function deleteComment(i) {
+            console.log("deleteComments()");
+            var xhr = new XMLHttpRequest();
+            xhr.open("DELETE", "../api/comment/" + i);
+            xhr.onload = () => getComments();
+            xhr.send();
+        }
+    </script>
+</body>
+</html>
